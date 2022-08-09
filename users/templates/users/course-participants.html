@@ -1,0 +1,14 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h1> {{course.code}} : {{course.desc}}</h1>
+        <h3>Participants: </h3>
+        {% for student in course.students.all %}
+            <div class="row"> <div class="col-md-3">{{student.name}}</div> <div class="col-md-3">{{student.email}}</div> <div div class="col-md-3">{{student.userid}}</div> </div>
+        {% endfor %}
+        <p class="text-muted"><a href="{% url 'course' course.code %}">Back to course page</a></p>
+    </div>
+    
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h1> {{course.code}} : {{course.desc}}</h1>
+        <h3>Instructors: </h3>
+        {% for prof in course.profs.all %}
+            <p> {{prof.name}} </p>
+        {% endfor %}
+        <p class="text-muted"><a href="{% url 'course-participants' course.code %}">View Participants</a></p>
+        <h2>Notes: </h2>
+        <h2>Assignments: </h2>
+        
+    </div>
+    
+{% endblock content %}

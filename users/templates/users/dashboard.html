@@ -1,0 +1,28 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h1>Welcome, {{user.name}}</h1>
+        <h2>Current Semester: 2022-23 Semester 1</h2>
+        <h3>You are a {{user.userType}} and your id is {{user.userid}}</h3>
+    </div>
+    <div class="container">
+        <h2>Courses</h2>
+        <div class="card group">
+            {% for course in courses %}
+                <div class="card">
+                    <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'course' course.code %}">{{course.code}}</a></h5>
+                    <p class="card-text">{{course.desc}}</p>
+                    <p class="card-text"><small class="text-muted">{{course.course_credits}} credits</small></p>
+                    </div>
+                </div>
+            {% endfor %}   
+        </div>
+        {% if user.is_staff %}
+            <h3><a href="{% url 'course-add' %}">Add courses</a></h3>
+        {% endif %}
+    </div>
+    
+{% endblock content %}
