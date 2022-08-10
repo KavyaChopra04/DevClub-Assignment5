@@ -8,10 +8,42 @@
         {% for prof in course.profs.all %}
             <p> {{prof.name}} </p>
         {% endfor %}
-        <p class="text-muted"><a href="{% url 'course-participants' course.code %}">View Participants</a></p>
+        {% if user.userType == 'Instructor' %}
+            <a href="{% url 'course-assignment' course.code %}">Add assignment</a>
+            <a href="{% url 'course-note' course.code %}">Add lecture note</a>
+            {% if addassgn %}
+                
+                <form enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <div class="form-group">
+                        <button class="btn btn-outline-info" type="submit">Add assignment</button>
+                    </div>
+                </form>
+            {% endif %}
+            
+            {% if addnote %}
+                
+                <form enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <div class="form-group">
+                        <button class="btn btn-outline-info" type="submit">Add Lecture Note</button>
+                    </div>
+                </form>
+            {% endif %}
+        {% endif %}
+        <p class="text-muted"><a href="{% url 'course-participants' code=course.code %}">View Participants</a></p>
         <h2>Notes: </h2>
+        {% for note in notes %}
+            <a href="{% url 'download-file' code=note.course.code filename=note.note.url name=note.name %}">{{note.name}}</a>
+            <br>
+        {% endfor %}
         <h2>Assignments: </h2>
-        
+        {% for assignment in assignments %}
+                    <a href="{% url 'submit-assignment' code=course.code name=assignment.name %}">{{assignment.name}}</a>
+                    <br>
+        {% endfor %}
     </div>
     
 {% endblock content %}

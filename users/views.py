@@ -5,11 +5,15 @@ from django.contrib import messages
 from .forms import *
 from .models import *
 from .admin import *
+from documents.models import *
+from documents.admin import *
 from django.contrib import auth
 from django.conf import settings
 from django.views import generic
 from django.shortcuts import get_object_or_404
 import logging
+import mimetypes
+import os
 # Define function to download pdf file using template
 def home(request):
     return redirect('profile')
@@ -42,9 +46,11 @@ def profile(request):
 def course_detail_view(request, code):
     try:
         course= Course.objects.get(code = code)
+        notes = Note.objects.filter(course = course)
+        assignments = Assignment.objects.filter(course=course)
     except Course.DoesNotExist:
         raise Http404('Course does not exist')
-    return render(request, 'users/course.html', {'course': course})
+    return render(request, 'users/course.html', {'course': course, 'addassgn' : False, 'addnote' : False, 'notes': notes, 'assignments': assignments})
 def course_participants(request, code):
     try:
         course= Course.objects.get(code = code)
@@ -65,5 +71,98 @@ def add_course(request):
     else: 
         form=AddCourseForm()
     return render(request, 'users/course-add.html', {'form': form})
+def course_assignment(request, code):
+    course= Course.objects.get(code = code)
+    notes = Note.objects.filter(course = course)
+    assignments = Assignment.objects.filter(course=course)
+    if(request.user.userType!="Instructor"):
+        messages.success(request, f'request.user.userType') 
+        return redirect('profile')
+    if request.method=='POST':
+        form = AddAssignmentForm(request.POST,request.FILES)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.course = course
+            obj.save()
+            return course_detail_view(request,code)
+    else: 
+        form=AddAssignmentForm()
+    return render(request, 'users/course.html', {'course': course, 'form': form, 'addassgn' : True, 'addnote' : False, 'notes': notes, 'assignments': assignments}) 
+def course_note(request, code):
+    course= Course.objects.get(code = code)
+    notes = Note.objects.filter(course = course)
+    assignments = Assignment.objects.filter(course=course)
+    if(request.user.userType!="Instructor"):
+        messages.success(request, f'request.user.userType') 
+        return redirect('profile')
+    if request.method=='POST':
+        form = AddNoteForm(request.POST,request.FILES)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.course = course
+            obj.save()
+            return course_detail_view(request,code)
+    else: 
+        form=AddNoteForm()
+    return render(request, 'users/course.html', {'course': course, 'form': form, 'addassgn' : False, 'addnote' : True, 'notes': notes, 'assignments': assignments}) 
+def download_file(request,  code, filename, name):
+    name=name+".pdf"
+    if filename != '':
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        filepath = BASE_DIR + filename
+        path = open(filepath, 'rb')
+        mime_type, _ = mimetypes.guess_type(filepath)
+        response = HttpResponse(path, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % name
+        # Return the response value
+        return response
+    else:
+        # Load the template
+        return course_detail_view(request,code)
+def submit_assignment(request, code, name):
+    course= Course.objects.get(code = code)
+    assignment=Assignment.objects.filter(course=course, name=name).first()
+    resubmit=False
+    if(assignment is not None):
+        resubmit=assignment.resubmissions_allowed
+    submission=Submission.objects.filter(assignment=assignment, student=request.user).first()
+    course= Course.objects.get(code = code)
+    submitted=False
+    if(request.user.userType=="Instructor"):
+        return render(request, 'users/assignment.html', {'course': course, 'assignment': assignment}) 
+    if(request.user.userType=="Admin"):
+        redirect('profile')
+    if request.method=='POST':
+        form = AddSubmissionForm(request.POST,request.FILES, instance=submission)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.student = request.user
+            obj.course= course
+            obj.assignment=assignment
+            obj.save()
+            submitted=True
+    else: 
+        form=AddSubmissionForm()
+    return render(request, 'users/assignment.html', {'course': course, 'submitted': submitted, 'assignment': assignment, 'resubmit': resubmit, 'form':form}) 
+def view_submissions(request, code, name):
+    course= Course.objects.get(code = code)
+    assignment=Assignment.objects.filter(course=course, name=name).first()
+    submissions=Submission.objects.filter(assignment=assignment)
+    return render(request, 'users/assignment.html', {'assignment': assignment, 'course': course, 'submissions': submissions, 'viewsub': True}) 
+def edit_assignment(request, code, name):
+    course= Course.objects.get(code = code)
+    assignment=Assignment.objects.get(course=course, name=name)
+    if(request.user.userType!="Instructor"):
+        return redirect('profile')
+    if request.method=='POST':
+        form = AddAssignmentForm(request.POST,request.FILES, instance=assignment)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.course = course
+            obj.save()
+            return submit_assignment(request, code, obj.name)
+    else: 
+        form=AddAssignmentForm(instance=assignment)
+    return render(request, 'users/edit-assignment.html', {'form':form}) 
 class CourseDetailView(generic.DetailView):
     model = Course

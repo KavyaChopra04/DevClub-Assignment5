@@ -1,0 +1,50 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="content-section">
+        <a href="{% url 'download-file' code=assignment.course.code filename=assignment.assignment.url name=assignment.name %}">{{assignment.name}}</a>
+            <br>
+        {% if user.userType == 'Instructor' %}
+            <a href="{% url 'view-submissions' course.code assignment.name %}">View Submissions</a>
+            <br>
+            {% if viewsub %}
+                {% for submission in submissions %}
+                    <a href="{% url 'download-file' code=course.code filename=submission.submission.url name=submission.name %}">{{submission.student.name}} : {{submission.student.userid}} : {{submission.name}}</a>
+                    <br>
+                {% endfor %}
+            {% endif %}
+            <a href = "{% url 'edit-assignment' course.code assignment.name %}">Edit Assigment Parameters (Change Deadline, Change File, ChangeFileName)</a>
+            <br>
+        {% endif %}
+        {% if user.userType == 'Student' %}
+            {% if submitted %}
+                {% if resubmit %}
+                    <form enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <legend class="border-bottom mb-4">Edit Submission</legend>
+                            {{ form|crispy }}
+                        </fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-outline-info" type="submit">Resubmit</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <h2>You have successfully submitted your assignment</h2>
+                {% endif %}
+            {% else %}
+                <form enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Make Submission</legend>
+                        {{ form|crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-info" type="submit">Submit</button>
+                    </div>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock content %}

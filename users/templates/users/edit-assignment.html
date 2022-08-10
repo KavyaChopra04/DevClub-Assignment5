@@ -1,0 +1,17 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <form enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Edit Parameters</legend>
+                {{ form|crispy }}
+            </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Edit Assignment</button>
+                </div>            
+        </form>
+    </div>
+{% endblock content %}
