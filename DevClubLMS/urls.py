@@ -28,9 +28,12 @@ urlpatterns = [
     path('course/addassignment/<str:code>/', user_views.course_assignment, name='course-assignment'),
     path('course/download/<str:code>/<path:filename>/<path:name>', user_views.download_file, name='download-file'),
     path('course/addnote/<str:code>/', user_views.course_note, name='course-note'),
-     path('course/<str:code>/participants', user_views.course_participants, name='course-participants'),
-     path('course/add', user_views.add_course, name='course-add'),
+    path('course/<str:code>/participants', user_views.course_participants, name='course-participants'),
+    path('course/add', user_views.add_course, name='course-add'),
     path('course/<str:code>/viewassignment/<path:name>', user_views.submit_assignment, name='submit-assignment'),
-     path('course/<str:code>/viewassignmentsubmissions/<path:name>', user_views.view_submissions, name='view-submissions'),
-      path('course/<str:code>/editassignment/<path:name>', user_views.edit_assignment, name='edit-assignment')
+    path('course/<str:code>/viewassignmentsubmissions/<path:name>', user_views.view_submissions, name='view-submissions'),
+    path('course/<str:code>/editassignment/<path:name>', user_views.edit_assignment, name='edit-assignment'),
+    path('course/<str:code>/announcements', user_views.course_announcements, name='course-announcements'),
+    path('course/<str:code>/announcement/<path:name>', user_views.course_announcement_page, name='course-announcement-page')
+      
 ]

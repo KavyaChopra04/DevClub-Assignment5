@@ -7,6 +7,8 @@ from .models import *
 from .admin import *
 from documents.models import *
 from documents.admin import *
+from communication.models import *
+from communication.admin import *
 from django.contrib import auth
 from django.conf import settings
 from django.views import generic
@@ -71,6 +73,9 @@ def add_course(request):
     else: 
         form=AddCourseForm()
     return render(request, 'users/course-add.html', {'form': form})
+
+
+
 def course_assignment(request, code):
     course= Course.objects.get(code = code)
     notes = Note.objects.filter(course = course)
@@ -164,5 +169,36 @@ def edit_assignment(request, code, name):
     else: 
         form=AddAssignmentForm(instance=assignment)
     return render(request, 'users/edit-assignment.html', {'form':form}) 
+
+
+def course_announcements(request,code):
+    course= Course.objects.get(code = code)
+    announcements=Announcement.objects.filter(course=course)
+    if request.method=='POST':
+        form = AddAnnouncementForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.course = course
+            obj.author=request.user
+            obj.save()
+    else: 
+        form=AddAnnouncementForm()
+    return render(request, 'users/course-announcements.html', {'form':form, 'course': course, 'announcements' : announcements})
+
+def course_announcement_page(request, code, name):
+    course= Course.objects.get(code = code)
+    announcement=Announcement.objects.get(course=course, title=name)
+    
+    if request.method=='POST':
+        form = AddReplyForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.announcement = announcement
+            obj.author= request.user
+            obj.save()
+    else: 
+        form=AddReplyForm()
+    replies=Reply.objects.filter(announcement=announcement)
+    return render(request, 'users/announcement-page.html', {'form':form,'course': course, 'announcement' : announcement, 'replies' : replies})
 class CourseDetailView(generic.DetailView):
     model = Course

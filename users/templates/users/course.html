@@ -8,11 +8,12 @@
         {% for prof in course.profs.all %}
             <p> {{prof.name}} </p>
         {% endfor %}
+        <a href="{% url 'course-announcements' course.code %}">Announcements</a>
+        <br>
         {% if user.userType == 'Instructor' %}
             <a href="{% url 'course-assignment' course.code %}">Add assignment</a>
-            <a href="{% url 'course-note' course.code %}">Add lecture note</a>
+            <br>
             {% if addassgn %}
-                
                 <form enctype="multipart/form-data" method="POST">
                     {% csrf_token %}
                     {{form|crispy}}
@@ -21,9 +22,9 @@
                     </div>
                 </form>
             {% endif %}
-            
+            <a href="{% url 'course-note' course.code %}">Add lecture note</a>
+            <br>
             {% if addnote %}
-                
                 <form enctype="multipart/form-data" method="POST">
                     {% csrf_token %}
                     {{form|crispy}}

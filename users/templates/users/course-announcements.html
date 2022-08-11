@@ -1,0 +1,31 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load blog_extras %}
+{% block content %}
+    <div class="container">
+        <h1> {{course.code}} : {{course.desc}}</h1>
+        <h3>Instructors: </h3>
+        {% for prof in course.profs.all %}
+            <p> {{prof.name}} </p>
+        {% endfor %}
+        <h1>Announcements</h1>
+        <br>
+        {% if user.userType == 'Instructor' %}
+            <p>Add announcement</p>
+            <p>This form supports markdown</p>
+            <form  method="POST">
+                {% csrf_token %}
+                {{form|crispy}}
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Add announcement</button>
+                </div>
+            </form>
+        {% endif %}
+        {% for announcement in announcements %}
+            <h4 ><a href="{% url 'course-announcement-page' code=course.code name=announcement.title %}">{{announcement.title}}</a></h4>
+            <p class="text-muted">Posted by {{announcement.author.name}} at {{announcement.date_posted}}</p>
+        {% endfor %}
+    </div>
+    
+{% endblock content %}

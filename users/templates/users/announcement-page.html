@@ -1,0 +1,37 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load blog_extras %}
+{% block content %}
+<div class="container">
+    <h1> {{course.code}} : {{course.desc}}</h1>
+    <h3>Instructors: </h3>
+    {% for prof in course.profs.all %}
+        <p> {{prof.name}} </p>
+    {% endfor %}
+    <h1 class="display-4"><a href="{% url 'course-announcement-page' course.code announcement.title %}">{{announcement.title}}</a></h1>
+        <p>{{announcement.body|convert_markdown|safe}}</p>
+        <p class="text-muted">Posted by {{announcement.author.name}} at {{announcement.date_posted}}</p>
+    <p>Add Reply</p>
+        <form  method="POST">
+            {% csrf_token %}
+            {{form|crispy}}
+            <div class="form-group">
+                <button class="btn btn-info" type="submit">Add reply</button>
+            </div>
+        </form>
+    <div class="card-group">
+        {% for reply in replies %}
+            <div class="card">
+            <div class="card-body">
+                <p class="card-text">{{reply.body|convert_markdown|safe}}</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Posted by {{reply.author.name}} at {{reply.date_posted}}</small>
+            </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+    
+{% endblock content %}
