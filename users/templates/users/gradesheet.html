@@ -1,0 +1,26 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h1>Gradesheet</h1>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Course</th>
+                <th scope="col">Grade</th>
+                <th scope="col">Credits</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for grade in grades %}
+                    <td>{{grade.course.code}}</td>
+                    <td>{{grade.grade}}</td>
+                    <td>{{grade.course.course_credits}}</td>
+                {% endfor %}
+            </tbody>
+          </table>
+          <h2>Overall CGPA : {{cgpa}}</h2>
+    </div>
+    
+{% endblock content %}

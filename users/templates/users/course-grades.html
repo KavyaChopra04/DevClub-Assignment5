@@ -1,0 +1,28 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h1>Gradesheet</h1>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Assessment name</th>
+                <th scope="col">Weightage</th>
+                <th scope="col">Your Score</th>
+                <th scope="col">Total Score</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                    <td>{{score.assessment.name}}</td>
+                    <td>{{score.weightage}}</td>
+                    <td>{{score.student_score}}</td>
+                    <td>{{score.total_score}}</td>
+                {% endfor %}
+            </tbody>
+          </table>
+          <h2>Overall Weighted Score : {{finalS}}</h2>
+    </div>
+    
+{% endblock content %}

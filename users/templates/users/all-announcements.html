@@ -1,0 +1,15 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        
+        <h2>Announcements </h2>
+        <hr>
+        {% for announcement in announcements %}
+                    <p><img src="https://img.icons8.com/external-icongeek26-flat-icongeek26/64/000000/external-announcement-essentials-icongeek26-flat-icongeek26.png"/> {{announcement.course.code}} : <a href="{% url 'course-announcement-page' code=announcement.course.code name=announcement.title %}">{{announcement.title}}</a> </p>
+                    <br>
+        {% endfor %}
+    </div>
+    
+{% endblock content %}

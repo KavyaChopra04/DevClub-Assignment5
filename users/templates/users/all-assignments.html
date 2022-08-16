@@ -1,0 +1,15 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        
+        <h2>Assignments </h2>
+        <hr>
+        {% for assignment in assignments %}
+                    <p><img src="https://img.icons8.com/cute-clipart/64/000000/task.png"/> <a href="{% url 'submit-assignment' code=assignment.course.code name=assignment.name %}">{{assignment.name}}</a> of course {{assignment.course.code}} due by {{assignment.deadline}}</p>
+                    <br>
+        {% endfor %}
+    </div>
+    
+{% endblock content %}

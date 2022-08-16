@@ -209,7 +209,10 @@ def all_assignments(request):
         assignments=assignments.union(Assignment.objects.filter(course=course))
     return render(request, 'users/all-assignments.html', {'assignments' : assignments})
 def all_announcements(request):
-    courses= Course.objects.filter(students=request.user)
+    if(request.user.userType=="Student"):
+        courses= Course.objects.filter(students=request.user)
+    if(request.user.userType=="Instructor"):
+        courses= Course.objects.filter(profs=request.user)
     announcements=Announcement.objects.none()
     for course in courses:
         announcements=announcements.union(Announcement.objects.filter(course=course))

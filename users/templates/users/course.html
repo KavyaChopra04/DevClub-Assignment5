@@ -9,11 +9,20 @@
             <p> {{prof.name}} </p>
         {% endfor %}
         <hr>
-        <img src="https://img.icons8.com/external-icongeek26-flat-icongeek26/64/000000/external-announcement-essentials-icongeek26-flat-icongeek26.png"/>
-        <a href="{% url 'course-announcements' course.code %}">Announcements</a>
+        <p class="text-muted"><img src="https://img.icons8.com/external-icongeek26-flat-icongeek26/64/000000/external-announcement-essentials-icongeek26-flat-icongeek26.png"/>
+        <a href="{% url 'course-announcements' course.code %}">Announcements</a></p>
         <hr>
         <br>
+        <p class="text-muted"><img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/000000/external-student-university-flaticons-flat-flat-icons-2.png"/> <a href="{% url 'course-participants' code=course.code %}">View Participants</a></p>
+        <hr>
+        {% if user.userType == 'Student' %}
+            <p class="text-muted"><img src="https://img.icons8.com/external-konkapp-outline-color-konkapp/64/000000/external-grade-back-to-school-konkapp-outline-color-konkapp.png"/> <a href="{% url 'course-participants' code=course.code %}">View Grades</a></p>
+        {% endif %}
+        <hr>
+        <h2>Assignments </h2>
+        <hr>
         {% if user.userType == 'Instructor' %}
+        <img src="https://img.icons8.com/external-simple-solid-edt.graphics/50/000000/external-Plus-add-and-remove-simple-solid-edt.graphics.png"/>
             <a href="{% url 'course-assignment' course.code %}">Add assignment</a>
             <br>
             {% if addassgn %}
@@ -25,6 +34,16 @@
                     </div>
                 </form>
             {% endif %}
+        {% endif %}
+        {% for assignment in assignments %}
+                    <img src="https://img.icons8.com/cute-clipart/64/000000/task.png"/>
+                    <a href="{% url 'submit-assignment' code=course.code name=assignment.name %}">{{assignment.name}}</a>
+                    <br>
+        {% endfor %}
+        <h2>Notes </h2>
+        <hr>
+        {% if user.userType == 'Instructor' %}
+        <img src="https://img.icons8.com/external-simple-solid-edt.graphics/50/000000/external-Plus-add-and-remove-simple-solid-edt.graphics.png"/>
             <a href="{% url 'course-note' course.code %}">Add lecture note</a>
             <br>
             {% if addnote %}
@@ -37,22 +56,12 @@
                 </form>
             {% endif %}
         {% endif %}
-        <p class="text-muted"><img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/000000/external-student-university-flaticons-flat-flat-icons-2.png"/> <a href="{% url 'course-participants' code=course.code %}">View Participants</a></p>
-        <hr>
-        <h2>Notes </h2>
-        <hr>
         {% for note in notes %}
             <img src="https://img.icons8.com/glyph-neue/64/000000/note.png"/>
             <a href="{% url 'download-file' code=note.course.code filename=note.note.url name=note.name %}">{{note.name}}</a>
             <br>
         {% endfor %}
-        <h2>Assignments </h2>
-        <hr>
-        {% for assignment in assignments %}
-                    <img src="https://img.icons8.com/cute-clipart/64/000000/task.png"/>
-                    <a href="{% url 'submit-assignment' code=course.code name=assignment.name %}">{{assignment.name}}</a>
-                    <br>
-        {% endfor %}
+        
     </div>
     
 {% endblock content %}
