@@ -9,6 +9,8 @@ from documents.models import *
 from documents.admin import *
 from communication.models import *
 from communication.admin import *
+from grades.models import *
+from grades.admin import *
 from django.contrib import auth
 from django.conf import settings
 from django.views import generic
@@ -200,5 +202,39 @@ def course_announcement_page(request, code, name):
         form=AddReplyForm()
     replies=Reply.objects.filter(announcement=announcement)
     return render(request, 'users/announcement-page.html', {'form':form,'course': course, 'announcement' : announcement, 'replies' : replies})
+def all_assignments(request):
+    courses= Course.objects.filter(students=request.user)
+    assignments=Assignment.objects.none()
+    for course in courses:
+        assignments=assignments.union(Assignment.objects.filter(course=course))
+    return render(request, 'users/all-assignments.html', {'assignments' : assignments})
+def all_announcements(request):
+    courses= Course.objects.filter(students=request.user)
+    announcements=Announcement.objects.none()
+    for course in courses:
+        announcements=announcements.union(Announcement.objects.filter(course=course))
+    return render(request, 'users/all-announcements.html', {'announcements' : announcements})
+def show_gradesheet(request):
+    grades=Grade.objects.filter(student=request.user)
+    creds=0
+    totsum=0
+    for grade in grades:
+        totsum+=(grade.grade)*(grade.course.course_credits)
+        creds+=grade.course.course_credits
+    if(creds!=0):
+        cgpa=totsum/creds
+    else:
+        cgpa=0
+    return render(request, 'users/gradesheet.html', {'grades' : grades, 'cgpa': cgpa})
+def upload_grades(request):
+    if(request.user.userType!="Instructor"):
+        return redirect('profile')
+    if request.method=='POST':
+        form = AddGradeForm(request.POST, request=request)
+        if form.is_valid():
+            form.save()
+    else: 
+        form=AddGradeForm(request=request)
+    return render(request, 'users/upload-grades.html', {'form': form})
 class CourseDetailView(generic.DetailView):
     model = Course

@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container">
         <h1> {{course.code}} : {{course.desc}}</h1>
-        <h3>Instructors: </h3>
+        <h3> <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png"/> Instructors: </h3>
         {% for prof in course.profs.all %}
             <p> {{prof.name}} </p>
         {% endfor %}
@@ -23,7 +23,7 @@
             </form>
         {% endif %}
         {% for announcement in announcements %}
-            <h4 ><a href="{% url 'course-announcement-page' code=course.code name=announcement.title %}">{{announcement.title}}</a></h4>
+            <h4 ><img src="https://img.icons8.com/external-icongeek26-flat-icongeek26/64/000000/external-announcement-essentials-icongeek26-flat-icongeek26.png"/><a href="{% url 'course-announcement-page' code=course.code name=announcement.title %}">{{announcement.title}}</a></h4>
             <p class="text-muted">Posted by {{announcement.author.name}} at {{announcement.date_posted}}</p>
         {% endfor %}
     </div>

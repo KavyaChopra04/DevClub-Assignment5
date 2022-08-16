@@ -4,11 +4,14 @@
 {% block content %}
     <div class="container">
         <h1> {{course.code}} : {{course.desc}}</h1>
-        <h3>Instructors: </h3>
+        <h3> <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png"/>  Instructors: </h3>
         {% for prof in course.profs.all %}
             <p> {{prof.name}} </p>
         {% endfor %}
+        <hr>
+        <img src="https://img.icons8.com/external-icongeek26-flat-icongeek26/64/000000/external-announcement-essentials-icongeek26-flat-icongeek26.png"/>
         <a href="{% url 'course-announcements' course.code %}">Announcements</a>
+        <hr>
         <br>
         {% if user.userType == 'Instructor' %}
             <a href="{% url 'course-assignment' course.code %}">Add assignment</a>
@@ -34,14 +37,19 @@
                 </form>
             {% endif %}
         {% endif %}
-        <p class="text-muted"><a href="{% url 'course-participants' code=course.code %}">View Participants</a></p>
-        <h2>Notes: </h2>
+        <p class="text-muted"><img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/000000/external-student-university-flaticons-flat-flat-icons-2.png"/> <a href="{% url 'course-participants' code=course.code %}">View Participants</a></p>
+        <hr>
+        <h2>Notes </h2>
+        <hr>
         {% for note in notes %}
+            <img src="https://img.icons8.com/glyph-neue/64/000000/note.png"/>
             <a href="{% url 'download-file' code=note.course.code filename=note.note.url name=note.name %}">{{note.name}}</a>
             <br>
         {% endfor %}
-        <h2>Assignments: </h2>
+        <h2>Assignments </h2>
+        <hr>
         {% for assignment in assignments %}
+                    <img src="https://img.icons8.com/cute-clipart/64/000000/task.png"/>
                     <a href="{% url 'submit-assignment' code=course.code name=assignment.name %}">{{assignment.name}}</a>
                     <br>
         {% endfor %}

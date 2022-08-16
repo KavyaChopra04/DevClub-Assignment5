@@ -80,9 +80,8 @@ class Course(models.Model):
     ]
     department = models.CharField(max_length=100, choices=DEPARTMENT_CHOICES)
     students = models.ManyToManyField(UserInfo, related_name='course_students')
-    course_intro = models.FileField(upload_to='course_intro')
     publish_grades = models.BooleanField(default=False)
-
+    icon = models.ImageField(upload_to='course-icons', height_field=None, width_field=None, max_length=100, default='course-icons/default.jpg')
     def __str__(self):
         return self.code
 

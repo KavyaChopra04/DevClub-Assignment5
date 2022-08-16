@@ -35,7 +35,7 @@ class UserRegistrationForm(forms.ModelForm):
 class AddCourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ('code', 'desc', 'course_credits', 'department', 'profs', 'students', 'publish_grades')
+        fields = ('code', 'desc', 'course_credits', 'department', 'profs', 'students', 'publish_grades', 'icon')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['profs'].queryset = UserInfo.objects.filter(userType = "Instructor")

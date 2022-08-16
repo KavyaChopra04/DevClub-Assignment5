@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
+from django.conf import settings  
+from django.conf.urls.static import static  
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', user_views.home),
@@ -34,6 +36,13 @@ urlpatterns = [
     path('course/<str:code>/viewassignmentsubmissions/<path:name>', user_views.view_submissions, name='view-submissions'),
     path('course/<str:code>/editassignment/<path:name>', user_views.edit_assignment, name='edit-assignment'),
     path('course/<str:code>/announcements', user_views.course_announcements, name='course-announcements'),
-    path('course/<str:code>/announcement/<path:name>', user_views.course_announcement_page, name='course-announcement-page')
+    path('course/<str:code>/announcement/<path:name>', user_views.course_announcement_page, name='course-announcement-page'),
+    path('assignments/', user_views.all_assignments, name="all-assignments"),
+    path('announcements/', user_views.all_announcements, name="all-announcements"),
+    path('gradesheet/', user_views.show_gradesheet, name="gradesheet"),
+    path('uploadgrades/', user_views.upload_grades, name="upload-grades"),
       
 ]
+
+if settings.DEBUG:  
+        urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)  

@@ -4,6 +4,7 @@
 {% block content %}
     <div class="content-section">
         <a href="{% url 'download-file' code=assignment.course.code filename=assignment.assignment.url name=assignment.name %}">{{assignment.name}}</a>
+        <p>Due by {{assignment.deadline}}</p>
             <br>
         {% if user.userType == 'Instructor' %}
             <a href="{% url 'view-submissions' course.code assignment.name %}">View Submissions</a>

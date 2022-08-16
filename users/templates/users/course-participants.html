@@ -4,7 +4,7 @@
 {% block content %}
     <div class="container">
         <h1> {{course.code}} : {{course.desc}}</h1>
-        <h3>Participants: </h3>
+        <h3> <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/000000/external-student-university-flaticons-flat-flat-icons-2.png"/> Participants: </h3>
         {% for student in course.students.all %}
             <div class="row"> <div class="col-md-3">{{student.name}}</div> <div class="col-md-3">{{student.email}}</div> <div div class="col-md-3">{{student.userid}}</div> </div>
         {% endfor %}

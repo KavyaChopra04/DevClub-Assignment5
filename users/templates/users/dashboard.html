@@ -10,22 +10,41 @@
     <div class="container">
         {% if user.is_staff %}
             <h3><a href="{% url 'course-add' %}">Add courses</a></h3>
+            <hr style="margin: 0px 0px 1em 0px">
         {% endif %}
         {% if user.is_staff %}
             <h2>Manage Courses</h2>
+            <hr style="margin: 0px 0px 1em 0px">
         {% else %}
             <h2>Your Courses</h2>
+            <hr style="margin: 0px 0px 1em 0px">
         {% endif %}
-        <div class="card group">
-            {% for course in courses %}
-                <div class="card">
-                    <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'course' course.code %}">{{course.code}}</a></h5>
-                    <p class="card-text">{{course.desc}}</p>
-                    <p class="card-text"><small class="text-muted">{{course.course_credits}} credits</small></p>
+            
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+                    {% for course in courses %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="{{course.icon.url}}"  class="card-img-top" alt="..." />
+                            <div class="card-body">
+                                <h5 class="card-title"><a href="{% url 'course' course.code %}">{{course.code}}</a></h5>
+                                <p class="card-text">{{course.desc}}</p>
+                                
+                            </div>
+                            <div class="card-footer">
+                                {% if user.is_staff %}
+                                <div style="display: flex;">
+                                    <div class="pe-3" style="align-items: left; justify-content: left;"><a class="text-muted">Delete</a></div>
+                                    <div class="ps-3" style="align-items: right; justify-content: right;"><a class="text-muted">Edit</a></div>
+                                </div>
+                                
+                                {% endif %}
+                                <small class="text-muted">{{course.course_credits}} credits</small>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}   
                 </div>
-            {% endfor %}   
+            </div>
         </div>
         
     </div>

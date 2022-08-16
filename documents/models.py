@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 # Create your models here.
 class Assignment(models.Model):
-    name=models.CharField(max_length=200, unique=True)
+    name=models.CharField(max_length=200, unique=True, help_text="Enter display name")
     assignment = models.FileField(upload_to='assignments')
     course = models.ForeignKey(Course, on_delete = models.CASCADE)
     deadline = models.DateTimeField()
@@ -15,7 +15,7 @@ class Assignment(models.Model):
         return self.name
 
 class Note(models.Model):
-    name=models.CharField(max_length=200)
+    name=models.CharField(max_length=200, help_text="Enter display name")
     note = models.FileField(upload_to='notes')
     course = models.ForeignKey(Course, on_delete = models.CASCADE)
     REQUIRED_FIELDS=['name', 'note', 'course']
@@ -23,7 +23,7 @@ class Note(models.Model):
         return self.name
 
 class Submission(models.Model):
-    name=models.CharField(max_length=200)
+    name=models.CharField(max_length=200, help_text="Enter display name")
     student= models.ForeignKey(UserInfo, on_delete = models.CASCADE)
     assignment = models.ForeignKey(Assignment, on_delete = models.CASCADE)
     submission=models.FileField(upload_to='submissions')
